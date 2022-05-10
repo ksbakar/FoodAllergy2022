@@ -1,0 +1,65 @@
+---
+title: "Food Oral Immunotherapy (OTI)"
+output: 
+  pdf_document:
+     toc: true
+     number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Trial Design
+
+We will assess a binary outcome with an oral food challenge at 18 months by looking at non-inferiority of low and very low dose Oral Immunotherapy (OIT) vs standard dose with (i) 3 arms and (ii) 2 arms if we cut out the very low dose arm. We expected 75% ‘pass’ the challenge at 18-month and define non-inferiority as an absolute difference of 15% between low dose/and very low dose OIT vs standard dose. 
+
+
+## Randomisation and Sample Size
+
+Assignment is 1:1:1 across the 3 arms. Use a single look at the data after 90 (or 120) kids have reached their 18 month of follow-up.
+
+
+# Model
+
+Let $Y_{i}$ be the binary outcome of the $i$th participant that represents the desensitisation with an oral food challenge at 18 months and let $\theta$ be the corresponsing success rate. Thus we write the binomial model: 
+\begin{eqnarray}
+\mathbf{Y}|\theta &\sim& Bino(n,\theta) \\
+\theta &\sim& Beta(a,b)\\
+\theta|\mathbf{Y} &\sim& Beta(a+y,b+n-y)
+\end{eqnarray}
+
+## Bayesian Decision Rule
+
+The parameter of interest is $\theta$ and we define the decision criterion using posterior probability of non-inferiority, 
+\begin{eqnarray}
+P=Pr(\theta > \theta_s - \delta |\mathbf{Y})
+\end{eqnarray}
+where, $\theta_s$ is the success rate for standard dose and $\delta$ is the threshold margin. 
+Based in the decision criterion, we define the decision rule that $\theta$ is non-inferior if $P > \epsilon_1$ and inferior if $P < \epsilon_0$.
+
+
+## Trial Simulation Parameters (Operating Characteristics)
+
+Values for $\theta$ is considered from 0.6 to 0.9 with an increment of 0.05.
+
+```{r, echo=FALSE}
+n_theta <- cbind(seq(0.60,0.90,by=0.05), seq(0.60,0.90,by=0.05), seq(0.60,0.90,by=0.05))
+n_theta
+```
+The threshold non-inferiority margin is considered as: $\delta = 0.10, 0.15, 0.20$; and the parameters for the decision rule is considered as: $\epsilon_0 = 0.025, 0.050, 0.100$; $\epsilon_1 = 0.975, 0.950, 0.900$.
+
+We use a non-informative prior distribution for $\theta$ by considering the hyper-parameters $a=b=1$. 
+```{r priorplot, echo=FALSE}
+set.seed(12)
+plot(density(rbeta(10000,1,1)),main="Beta(1,1) prior",xlab="")
+```
+
+## Sample size 90
+
+(i) 30 participants in each arm for a 3-arm trial and (ii) 45 participants per arm for a 2-arm trial, if we cut out the very low dose arm. 
+
+## Sample size 120
+
+(i) 40 participants in each arm for a 3-arm trial and (ii) 60 participants per arm for a 2-arm trial, if we cut out the very low dose arm. 
+
